@@ -6,7 +6,7 @@
 /*   By: vwautier <vwautier@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:06:54 by vwautier          #+#    #+#             */
-/*   Updated: 2025/02/23 18:44:11 by vwautier         ###   ########.fr       */
+/*   Updated: 2025/04/07 13:22:14 by vwautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	handler(int sig)
 		g_serveur = 1;
 }
 
-void	signalsetup(struct sigaction *sa)
+static void	signalsetup(struct sigaction *sa)
 {
 	sa->sa_handler = handler;
 	sa->sa_flags = 0;
@@ -46,12 +46,12 @@ void	signalsetup(struct sigaction *sa)
 	sigaddset(&sa->sa_mask, SIGUSR2);
 	if (sigaction(SIGUSR1, sa, NULL) == -1)
 	{
-		write(1, "Error\n", 7);
+		write(2, "Error\n", 6);
 		exit(EXIT_FAILURE);
 	}
 }
 
-void	processchar(char c, int pid)
+static void	processchar(char c, int pid)
 {
 	int	bit;
 
@@ -78,13 +78,12 @@ int	main(int argc, char **argv)
 
 	if (argc != 3)
 	{
-		write(1, "Client <PID> <MESSAGE>\n", 24);
+		write(2, "Client <PID> \"message\"\n", 23);
 		exit(EXIT_FAILURE);
 	}
 	signalsetup(&sa);
 	pids = ft_atoi(argv[1]);
 	currentmessage = argv[2];
-	ft_printf("Le PID du client : %d\n", getpid());
 	while (*currentmessage)
 		processchar(*currentmessage++, pids);
 	processchar('\0', pids);

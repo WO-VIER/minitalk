@@ -1,32 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   testserv.c                                         :+:      :+:    :+:   */
+/*   serveur.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vwautier <vwautier@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 13:55:28 by vwautier          #+#    #+#             */
-/*   Updated: 2025/02/23 18:20:54 by vwautier         ###   ########.fr       */
+/*   Updated: 2025/04/07 13:22:29 by vwautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
 /*
 ** 1. Dans signalhandler:
 ** - OR le bit a 1 de poids fort vers faible
 ** - Envoie un signal au client pour l'ack
-** 
+**
 ** 2. Dans signalsetup:
 ** - Passe le handler a la structure
-** - Active le flag pour passer le siginfo_t qui 
-** 	 donne plus de détails sur le signal
+** - Active le flag pour passer le siginfo_t qui
+** 		donne plus de détails sur le signal
 ** - Vide le masque
 ** - Permet de bloquer SIGUSR1 et SIGUSR2 quand le handler est en traitement
 ** - Quand le programme recois un SIGUSR 1 ou 2 il va se suspendre
 **   pour lancer le signalhandler et bloque les signaux SIGUSR 1 et 2
 **   pendant le traitement
 */
-void	charprocess(char *c, int *bit)
+static void	charprocess(char *c, int *bit)
 {
 	(*bit)++;
 	if (*bit == 8)
@@ -48,7 +49,7 @@ static void	signalhandler(int sig, siginfo_t *info, void *context)
 	static int	lastpid = 0;
 
 	(void)context;
-	pids = info-> si_pid;
+	pids = info->si_pid;
 	if (pids != lastpid)
 	{
 		lastpid = pids;
@@ -61,17 +62,17 @@ static void	signalhandler(int sig, siginfo_t *info, void *context)
 	kill(pids, SIGUSR1);
 }
 
-void	signalsetup(struct sigaction *sa)
+static void	signalsetup(struct sigaction *sa)
 {
-	sa ->sa_sigaction = signalhandler;
-	sa ->sa_flags = SA_SIGINFO;
+	sa->sa_sigaction = signalhandler;
+	sa->sa_flags = SA_SIGINFO;
 	sigemptyset(&sa->sa_mask);
 	sigaddset(&sa->sa_mask, SIGUSR1);
 	sigaddset(&sa->sa_mask, SIGUSR2);
-	if (sigaction(SIGUSR1, sa, NULL) == -1 || sigaction(SIGUSR2, sa, NULL)
-		== -1)
+	if (sigaction(SIGUSR1, sa, NULL) == -1
+		|| sigaction(SIGUSR2, sa, NULL) == -1)
 	{
-		ft_printf("ERROR : SIGACTION\n");
+		write(2, "ERROR : SIGACTION\n", 18);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -83,7 +84,7 @@ int	main(int argc, char **argv)
 	(void)argv;
 	if (argc != 1)
 	{
-		ft_printf("ERROR : NO PARAMS !\n");
+		write(2, "ERROR : NO PARAMS !\n", 20);
 		exit(EXIT_FAILURE);
 	}
 	ft_printf("Le PID du serveur est :  %d\n", getpid());
