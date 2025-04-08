@@ -6,7 +6,7 @@
 #    By: vwautier <vwautier@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 16:08:55 by vwautier          #+#    #+#              #
-#    Updated: 2025/04/07 13:22:18 by vwautier         ###   ########.fr        #
+#    Updated: 2025/04/08 16:07:13 by vwautier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,11 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 
 
-SERVER = serveur
+SERVER = server
 CLIENT = client
 
 
-SERVER_SRC = serveur.c util.c
+SERVER_SRC = server.c util.c
 CLIENT_SRC = client.c util.c
 
 
