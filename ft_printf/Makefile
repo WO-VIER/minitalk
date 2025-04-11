@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vwautier <vwautier@student.42.fr>          +#+  +:+       +#+         #
+#    By: vwautier <vwautier@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/11 16:08:55 by vwautier          #+#    #+#              #
-#    Updated: 2024/12/06 12:23:07 by vwautier         ###   ########.fr        #
+#    Updated: 2025/04/11 13:04:48 by vwautier         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CC = cc
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror
 NAME = libftprintf.a
 

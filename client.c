@@ -6,7 +6,7 @@
 /*   By: vwautier <vwautier@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 16:06:54 by vwautier          #+#    #+#             */
-/*   Updated: 2025/04/08 16:07:18 by vwautier         ###   ########.fr       */
+/*   Updated: 2025/04/11 18:23:50 by vwautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,10 @@ static void	signalsetup(struct sigaction *sa)
 static void	processchar(char c, int pid)
 {
 	int	bit;
+	int	time_count;
 
 	bit = 0;
+	time_count = 0;
 	while (bit < 8)
 	{
 		if (c & (0b10000000 >> bit))
@@ -64,6 +66,13 @@ static void	processchar(char c, int pid)
 			kill(pid, SIGUSR2);
 		while (!g_serveur)
 		{
+			usleep(1000);
+			time_count++;
+			if (time_count >= 1000)
+			{
+				write(2, "Error: Server not responding\n", 29);
+				exit(EXIT_FAILURE);
+			}
 		}
 		g_serveur = 0;
 		bit++;
@@ -82,7 +91,9 @@ int	main(int argc, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	signalsetup(&sa);
-	pids = ft_atoi(argv[1]);
+	pids = ft_pidtoi(argv[1]);
+	if (kill(pids, 0) == -1)
+		error_exit();
 	currentmessage = argv[2];
 	while (*currentmessage)
 		processchar(*currentmessage++, pids);

@@ -6,29 +6,39 @@
 /*   By: vwautier <vwautier@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/21 15:33:06 by vwautier          #+#    #+#             */
-/*   Updated: 2025/04/08 16:06:54 by vwautier         ###   ########.fr       */
+/*   Updated: 2025/04/11 18:07:30 by vwautier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-int	ft_atoi(const char *string)
+void	error_exit(void)
 {
-	int	csigne;
-	int	number;
-	int	i;
+	write(2, "Error: Invalid PID\n", 19);
+	exit(EXIT_FAILURE);
+}
+
+int	ft_pidtoi(const char *string)
+{
+	long	number;
+	int		i;
 
 	i = 0;
 	number = 0;
-	csigne = 1;
-	while ((string[i] == ' ' || (string[i] >= '\t' && string[i] <= '\r')))
-		i++;
-	if (string[i] == '-' || string[i] == '+')
+	if (string[i] == '\0')
+		error_exit();
+	while (string[i])
 	{
-		if (string[i++] == '-')
-			csigne = -1;
+		if (!(string[i] >= '0' && string[i] <= '9'))
+			error_exit();
+		i++;
 	}
+	i = 0;
 	while (string[i] >= '0' && string[i] <= '9')
+	{
 		number = (number * 10) + (string[i++] - '0');
-	return (number * csigne);
+		if (number > INT_MAX)
+			error_exit();
+	}
+	return ((int)number);
 }
